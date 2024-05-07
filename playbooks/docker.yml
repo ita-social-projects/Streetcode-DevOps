@@ -1,0 +1,35 @@
+---
+- hosts: localhost
+  connection: local 
+  become: true
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+       upgrade: yes
+       update_cache: yes
+       cache_valid_time: 86400
+
+    - name: Install a list of packages
+      ansible.builtin.apt:
+        pkg:
+        - ca-certificates
+        - curl
+        - apt-transport-https
+        - software-properties-common
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+    - name: Add user to docker group
+      command: usermod -aG docker {{ ansible_user_id }}
+    - name: Switch to the user
+      command: su - {{ ansible_user_id }}
