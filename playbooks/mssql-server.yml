@@ -1,0 +1,20 @@
+---
+- hosts: localhost
+  connection: local 
+  become: yes
+  tasks:
+    - name: Add Microsoft SQL Server repository
+      apt_repository:
+        repo: deb [arch=amd64] https://packages.microsoft.com/ubuntu/20.04/mssql-server-2019 xenial main
+        state: present
+        filename: mssql-server
+
+    - name: Install MSSQL Server packages
+      apt:
+        name: mssql-server
+        state: present
+
+    - name: Run MSSQL Server setup
+      command: /opt/mssql/bin/mssql-conf setup accept-eula=yes
+      async: 10000
+      poll: 0
