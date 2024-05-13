@@ -33,3 +33,7 @@
       command: usermod -aG docker {{ ansible_user_id }}
     - name: Switch to the user
       command: su - {{ ansible_user_id }}
+    - name: Install  docker compose
+      ansible.builtin.apt:
+        pkg:
+        - docker-compose-plugin
