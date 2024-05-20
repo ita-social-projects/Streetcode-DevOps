@@ -16,8 +16,9 @@ if [ -z "$newToken" ]; then
 fi
 
 
-awk -v newToken="${newToken}" '/^INSTAGRAM_TOKEN=/{gsub(/=.*/, "=\"" newToken "\"")}1' "$path" > tmpfile && mv tmpfile "$path"
+awk -v newToken="${newToken}" '/^INSTAGRAM_TOKEN=/{gsub(/=.*/, "=\"" newToken "\"")}1' "$path" > "$tmpfile"
 
+sudo mv "$tmpfile" "$path"
 
 
 echo "New INSTAGRAM_TOKEN: $newToken"
