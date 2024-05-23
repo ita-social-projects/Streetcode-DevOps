@@ -14,7 +14,7 @@
 		        }
 		    }
 		}
-		stage('Hello') {
+		stage('Renew token') {
 		    steps {    
 		        script {
 		        sh 'cat /etc/environment'
@@ -35,7 +35,7 @@
 		            
 		            sh """
 		              export DOCKER_TAG_BACKEND=${DOCKER_TAG_BACKEND}
-                  export DOCKER_TAG_FRONTEND=${DOCKER_TAG_FRONTEND}
+                              export DOCKER_TAG_FRONTEND=${DOCKER_TAG_FRONTEND}
       			      docker stop backend frontend nginx loki certbot
       			      docker container prune -f
       			      docker volume prune -f
