@@ -1,0 +1,49 @@
+	pipeline {
+	    agent {
+		label 'production'
+		
+	    }
+
+	    stages {
+	      stage('Checkout') {
+		    steps {    
+		        script {
+		              checkout scmGit(
+		              branches: [[name: 'main']],
+		             userRemoteConfigs: [[credentialsId: 'StreetcodeGithubCreds', url: 'https://github.com/ita-social-projects/Streetcode-DevOps.git']])
+		        }
+		    }
+		}
+		stage('Renew token') {
+		    steps {    
+		        script {
+		        sh 'cat /etc/environment'
+		            sh 'chmod 666 autorefresh_instagram.sh'
+		            sh 'sudo sh autorefresh_instagram.sh'
+		            sh 'cat /etc/environment'
+
+		            def DOCKER_TAG_FRONTEND = sh(
+		                script: 'docker container inspect $(docker container ls -aq) --format "{{.Config.Image}}" | grep "streetcodeua/streetcode_client:" | perl -pe \'($_)=/([0-9]+([.][0-9]+)+)/\'',
+		                returnStdout: true
+		            ).trim()
+		            def DOCKER_TAG_BACKEND = sh(
+		                script: 'docker container inspect $(docker container ls -aq) --format "{{.Config.Image}}" | grep "streetcodeua/streetcode:" | perl -pe \'($_)=/([0-9]+([.][0-9]+)+)/\'',
+		                returnStdout: true
+		            ).trim()                 
+		            echo "${DOCKER_TAG_FRONTEND}"
+		            echo "${DOCKER_TAG_BACKEND}"
+		            
+		            sh """
+		              export DOCKER_TAG_BACKEND=${DOCKER_TAG_BACKEND}
+                              export DOCKER_TAG_FRONTEND=${DOCKER_TAG_FRONTEND}
+      			      docker stop backend frontend nginx loki certbot
+      			      docker container prune -f
+      			      docker volume prune -f
+      			      docker network prune -f
+      			      sleep 10
+      			      docker compose --env-file /etc/environment up -d"""
+      		        }
+	  	    }
+	  	}
+	   }
+	}
