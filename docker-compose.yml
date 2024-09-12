@@ -49,6 +49,7 @@ services:
       API_URL: ${ENV_API_BACKEND}
       REACT_APP_GOOGLE_ANALYTICS: ${ENV_GOOGLE_ANALYTICS}
       RECAPTCHA_SITE_KEY: ${RECAPTCHA_SITE_KEY}
+      VERSION: ${DOCKER_TAG_FRONTEND}
     logging:
       driver: loki
       options:
