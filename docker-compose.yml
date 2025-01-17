@@ -5,7 +5,7 @@ services:
     container_name: certbot
     volumes:
       - /etc/certbot/www/:/var/www/certbot/:rw
-      - /etc/certbot/conf/:/etc/letsencrypt/:rw
+      - /etc/certbot/conf/letsencrypt/:/etc/letsencrypt/:rw
 
   nginx:
     restart: always
@@ -20,7 +20,7 @@ services:
     volumes:
       - ./templates:/etc/nginx/templates
       - /etc/certbot/www:/var/www/certbot/:ro
-      - /etc/certbot/conf:/etc/nginx/ssl/:ro
+      - /etc/certbot/conf/letsencrypt/:/etc/nginx/ssl/:ro
 
 
   loki:
@@ -32,6 +32,20 @@ services:
     command: -config.file=/etc/loki/local-config.yaml
     volumes:
       - ./loki/config:/etc/loki
+
+  dbupdate:
+    restart: on-failure
+    image: streetcodeua/dbupdate:${DOCKER_TAG_DBUPDATE}
+    container_name: dbupdate
+    pull_policy: always
+    environment:
+      STREETCODE_ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
+    networks:
+      - backend
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"
 
   frontend:
     restart: always
@@ -62,6 +76,8 @@ services:
     pull_policy: always
     expose:
       - "80"
+    depends_on:
+      - dbupdate
     environment:
       STREETCODE_ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
       STREETCODE_Blob__BlobStoreKey: ${BLOB_STORAGE_KEY}
@@ -102,3 +118,4 @@ networks:
   frontend:
     external:
       name: frontend
+
