@@ -5,7 +5,7 @@ services:
     container_name: certbot
     volumes:
       - /etc/certbot/www/:/var/www/certbot/:rw
-      - /etc/certbot/conf/letsencrypt/:/etc/letsencrypt/:rw
+      - /etc/certbot/conf/:/etc/letsencrypt/:rw
 
   nginx:
     restart: always
@@ -20,7 +20,7 @@ services:
     volumes:
       - ./templates:/etc/nginx/templates
       - /etc/certbot/www:/var/www/certbot/:ro
-      - /etc/certbot/conf/letsencrypt/:/etc/nginx/ssl/:ro
+      - /etc/certbot/conf/:/etc/nginx/ssl/:ro
 
 
   loki:
