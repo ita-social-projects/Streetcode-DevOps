@@ -5,7 +5,7 @@ services:
     container_name: certbot
     volumes:
       - /etc/certbot/www/:/var/www/certbot/:rw
-      - /etc/certbot/conf/letsencrypt/:/etc/letsencrypt/:rw
+      - /etc/certbot/conf/:/etc/letsencrypt/:rw
 
   nginx:
     restart: always
@@ -20,13 +20,13 @@ services:
     volumes:
       - ./templates:/etc/nginx/templates
       - /etc/certbot/www:/var/www/certbot/:ro
-      - /etc/certbot/conf/letsencrypt/:/etc/nginx/ssl/:ro
+      - /etc/certbot/conf/:/etc/nginx/ssl/:ro
 
 
   loki:
     restart: always
     container_name: loki
-    image: grafana/loki:latest
+    image: grafana/loki:2.9.11
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
