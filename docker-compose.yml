@@ -114,8 +114,8 @@ volumes:
 networks:
   backend:
     external: true
-      name: backend
+    name: backend
   frontend:
     external: true
-      name: frontend
+    name: frontend
 
