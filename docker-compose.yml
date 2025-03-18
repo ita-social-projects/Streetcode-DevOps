@@ -40,8 +40,8 @@ services:
     pull_policy: always
     environment:
       STREETCODE_ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
-  #  networks:
-  #    - backend
+    networks:
+      - backend
     logging:
       driver: loki
       options:
@@ -113,9 +113,9 @@ volumes:
   backend:
 networks:
   backend:
-    external: true
+   # external: true
     name: backend
   frontend:
-    external: true
+    #external: true
     name: frontend
 
