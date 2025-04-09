@@ -40,8 +40,6 @@ services:
     pull_policy: always
     environment:
       STREETCODE_ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
-    networks:
-      - backend
     logging:
       driver: loki
       options:
