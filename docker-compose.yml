@@ -75,7 +75,8 @@ services:
     expose:
       - "80"
     depends_on:
-      - dbupdate
+      dbupdate:
+        condition: service_completed_successfully
     environment:
       STREETCODE_ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
       STREETCODE_Blob__BlobStoreKey: ${BLOB_STORAGE_KEY}
