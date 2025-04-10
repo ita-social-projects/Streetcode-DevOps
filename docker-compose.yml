@@ -39,7 +39,7 @@ services:
     container_name: dbupdate
     pull_policy: always
     environment:
-      STREETCODE_ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
+      STREETCODE_ConnectionStrings__DefaultConnection: ${DBUPDATE_CONNECTION_STRING}
     logging:
       driver: loki
       options:
